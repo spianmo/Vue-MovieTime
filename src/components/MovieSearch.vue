@@ -14,8 +14,9 @@
                 </span>
               <div class="line">
               </div>
-              <input type="text" placeholder="搜索电影、影人、文章、用户、家族" class="input_val">
-              <div class="search_icon">
+              <input type="text" placeholder="搜索电影、影人、文章、用户、家族" class="input_val" v-model="keyword"
+                     @keydown.enter="loadMovieList">
+              <div class="search_icon" v-on:click="loadMovieList">
               </div>
             </div>
           </div>
@@ -87,55 +88,33 @@
             <div>
               <div class="nav_relative">
                 <div>
-                  <div class="select_ed clearfix">
+                  <div class="select_ed clearfix" v-show="currentType.name!==undefined || currentYear.length!==0">
                     <div class="select_go">已选择：</div>
                     <div class="select_type">
-                        <span class="el-tag el-tag--light">中国
-                          <i class="el-tag__close el-icon-close"></i>
-                        </span>
-                    </div>
-                  </div>
-                  <div class="select_ed clearfix">
-                    <div class="select_go">国家/地区：</div>
-                    <div class="select_type">
-                      <ul class="search_select clearfix">
-                        <li class="search_item">美国</li>
-                        <li class="search_item search_click">中国</li>
-                        <li class="search_item">日本</li>
-                        <li class="search_item">法国</li>
-                        <li class="search_item">英国</li>
-                        <li class="search_item">中国香港</li>
-                        <li class="search_item">意大利</li>
-                        <li class="search_item">德国</li>
-                        <li class="search_item">韩国</li>
-                        <li class="search_item">加拿大</li>
-                        <li class="search_item">西班牙</li>
-                        <li class="search_item">中国台湾</li>
-                        <li class="search_item">印度</li>
-                        <li class="search_item">西德</li>
-                        <li class="search_item">澳大利亚</li>
-                        <li class="search_item">苏联</li>
-                        <li class="search_item">比利时</li>
-                        <li class="search_item">瑞士</li>
-                        <li class="search_item">瑞典</li>
-                        <li class="search_item">俄罗斯</li>
-                        <li class="search_item">阿根廷</li>
-                        <li class="search_item">墨西哥</li>
-                        <li class="search_item">波兰</li>
-                        <li class="search_item">丹麦</li>
-                        <li class="search_item">荷兰</li>
-                        <li class="search_item">巴西</li>
-                        <li class="search_item">奥地利</li>
-                        <li class="search_item">泰国</li>
-                      </ul>
+                      <el-tag
+                          closable
+                          v-show="currentYear.length!==0"
+                          :disable-transitions="false"
+                          @close="removeYear()">
+                        {{ currentYear }}年
+                      </el-tag>
+                      <el-tag
+                          closable
+                          v-show="currentType.name!==undefined"
+                          :disable-transitions="false"
+                          @close="removeType()">
+                        {{ currentType.name }}
+                      </el-tag>
                     </div>
                   </div>
                   <div class="select_ed clearfix">
                     <div class="select_go">类型：</div>
                     <div class="select_type">
                       <ul class="search_select clearfix">
-                        <li class="search_item" v-for="typeItem in typeList" :key="typeItem.typeId" @click="typeClick(typeItem)"
-                            :class="{'search_click':typeItem.typeId===currentType.typeId}">{{ typeItem.name }}</li>
+                        <li class="search_item" v-for="typeItem in typeList" :key="typeItem.typeId"
+                            @click="typeClick(typeItem)"
+                            :class="{'search_click':typeItem.typeId===currentType.typeId}">{{ typeItem.name }}
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -155,74 +134,29 @@
                 </div>
                 <div class="search_film_content clearfix">
                   <p class="gj_w">相关影视：
-                    <span>2.0万</span>个</p>
+                    <span>{{ totalCount }}</span>个</p>
                   <div class="art_content">
                     <ul class="other_list clearfix">
-                      <li class="clickobj">
+                      <el-skeleton :rows="6" animated v-show="isRequesting"/>
+                      <el-empty :image-size="200" description="没有搜索到相关影片"
+                                v-show="!isRequesting&&movieList.length===0"></el-empty>
+                      <li class="clickobj" :id="item.movieId" v-for="item in movieList" v-show="!isRequesting">
                         <div class="filmscore">
                           <b>总评分</b>
-                          <p>8.3</p>
+                          <p>{{ item.rating }}</p>
                         </div>
                         <h3>
-                          <span>让子弹飞 Let The Bullets Fly （2010）</span>
+                          <span>{{ `${item.name} ${item.nameEn} (${item.movieYear})` }}</span>
                         </h3>
                         <div class="other_mid clearfix">
                             <span class="pic">
-                              <img src="http://img5.mtime.cn/img2x/mt/2010/11/23/102316.52177023_o.jpg">
+                              <img :src="item.img">
                             </span>
                           <div class="other_txt">
                             <div class="important">
-                              <p>132分钟 - 类型： 喜剧 / 动作</p>
-                              <p>导演：姜文</p>
-                              <p>主演：姜文 葛优</p>
-                            </div>
-                            <div class="video_btn">
-                              <a>在线播放</a>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="clickobj">
-                        <div class="filmscore">
-                          <b>总评分</b>
-                          <p>7.4</p>
-                        </div>
-                        <h3>
-                          <span>集结号 Assembly （2007）</span>
-                        </h3>
-                        <div class="other_mid clearfix">
-                            <span class="pic">
-                              <img src="http://img31.mtime.cn/mt/2014/02/23/033946.80506699_o.jpg">
-                            </span>
-                          <div class="other_txt">
-                            <div class="important">
-                              <p>118分钟 - 类型： 传记 / 历史 / 剧情</p>
-                              <p>导演： 冯小刚</p>
-                              <p>主演： 张涵予 王宝强</p>
-                            </div>
-                            <div class="video_btn">
-                              <a>在线播放</a>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="clickobj">
-                        <div class="filmscore">
-                          <b>总评分</b>
-                          <p>8.3</p>
-                        </div>
-                        <h3>
-                          <span>西游记之大圣归来 Monkey King: Hero is Back （2015）</span>
-                        </h3>
-                        <div class="other_mid clearfix">
-                            <span class="pic">
-                              <img src="http://img5.mtime.cn/mt/2017/05/10/191034.23496853_o.jpg">
-                            </span>
-                          <div class="other_txt">
-                            <div class="important">
-                              <p>85分钟 - 类型： 动画</p>
-                              <p>导演： 田晓鹏</p>
-                              <p>主演： 张磊 林子杰</p>
+                              <p>{{ `${item.length}分钟 - 类型：${item.typeName.replace(/,/g, " / ")}` }}</p>
+                              <p>导演：{{ item.directorName }}</p>
+                              <p>主演：{{ item.actorsName.replace(/,/g, "  ") }}</p>
                             </div>
                             <div class="video_btn">
                               <a>在线播放</a>
@@ -231,19 +165,13 @@
                         </div>
                       </li>
                       <div class="page_content">
-                        <div class="el-pagination is-background">
-                          <button type="button" disabled="disabled" class="btn-prev"><i
-                              class="el-icon el-icon-arrow-left"></i></button>
-                          <ul class="el-pager">
-                            <li class="number active">1</li>
-                            <li class="number">2</li>
-                            <li class="number">3</li>
-                            <li class="el-icon more btn-quicknext el-icon-more"></li>
-                            <li class="number">10</li>
-                          </ul>
-                          <button type="button" class="btn-next"><i
-                              class="el-icon el-icon-arrow-right"></i></button>
-                        </div>
+                        <el-pagination
+                            background
+                            @current-change="pageChange"
+                            layout="prev, pager, next"
+                            :current-page="currentPage"
+                            :total="totalCount">
+                        </el-pagination>
                       </div>
                     </ul>
                   </div>
@@ -309,6 +237,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'MovieSearch',
   props: {
@@ -318,36 +247,83 @@ export default {
     return {
       typeList: [],
       yearList: [],
-      currentType: Object,
-      currentYear: ""
+      currentType: [],
+      currentYear: "",
+      movieList: [],
+      currentPage: 1,
+      totalPage: 1,
+      totalCount: 0,
+      keyword: "",
+      isRequesting: false
     }
   },
   methods: {
     async loadAllTypes() {
-      let response = await this.http.get("http://118.25.42.197:9930/api/movies/categories")
+      let response = await this.GlobalService.getMovieCategorie()
       this.typeList = response.data
     },
     async loadAllYear() {
-      let response = await this.http.get("http://118.25.42.197:9930/api/movies/years")
+      let response = await this.GlobalService.getMovieYear()
       this.yearList = response.data
     },
     typeClick(typeItem) {
       this.currentType = typeItem;
-      this.loadMovies();
+      this.loadMovieList();
     },
     yearSelect(event) {
-      this.loadMovies();
+      this.loadMovieList();
     },
-    loadMovies(){
-      console.log("调用一次")
+    async loadMovieList() {
+      this.isRequesting = true
+      let response = await this.GlobalService.getMovieList({
+        keyword: this.keyword,
+        movie_year: this.currentYear,
+        categories: this.currentType.typeId,
+        pageNum: 0,
+        pageSize: 10
+      })
+      this.isRequesting = false
+      this.movieList = response.data.content
+      this.currentPage = response.data.number + 1
+      this.totalPage = response.data.totalPages
+      this.totalCount = response.data.totalElements
+    },
+    removeYear() {
+      this.currentYear = ""
+      this.loadMovieList();
+    },
+    removeType() {
+      this.currentType = {}
+      this.loadMovieList();
+    },
+    async pageChange(page) {
+      this.isRequesting = true
+      let response = await this.GlobalService.getMovieList({
+        keyword: this.keyword,
+        movie_year: this.currentYear,
+        categories: [this.currentType.typeId],
+        pageNum: page - 1,
+        pageSize: 10
+      })
+      this.isRequesting = false
+      this.movieList = response.data.content
+      this.currentPage = response.data.number + 1
+      this.totalPage = response.data.totalPages
+      this.totalCount = response.data.totalElements
     }
   },
   mounted() {
     this.loadAllTypes().catch(err => {
       console.log(err.message)
+      this.$message.error(err.message + ":获取电影类型失败");
     })
     this.loadAllYear().catch(err => {
       console.log(err.message)
+      this.$message.error(err.message + ":获取电影年份失败");
+    })
+    this.pageChange(this.currentPage).catch(err => {
+      console.log(err.message)
+      this.$message.error(err.message + ":加载下一页数据失败");
     })
   }
 }
@@ -821,26 +797,7 @@ div#app {
   line-height: 1;
 }
 
-
-body div:hover {
-  cursor: default;
+.el-tag {
+  margin-right: 20px;
 }
-
-div, i, li, ul {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-}
-
-ul {
-  list-style: none;
-}
-
-*, :after, :before {
-  box-sizing: border-box;
-}
-
 </style>

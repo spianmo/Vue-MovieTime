@@ -11,6 +11,7 @@
           </dd>
           <dd class="cur">
             <a href="http://film.mtime.com/">电影</a>
+            <i></i>
           </dd>
           <dd>
             <a href="http://news.mtime.com/">原创</a>
@@ -186,4 +187,5 @@ export default {
   display: inline-block;
   vertical-align: middle;
 }
+
 </style>
