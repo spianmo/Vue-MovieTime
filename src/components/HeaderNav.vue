@@ -1,42 +1,63 @@
 <template>
   <div id="beaderbar">
     <div class="headbarout fixed">
-      <div class="headbar head-mini" id="headbar">
+      <div id="headbar" class="headbar head-mini">
         <h1 id="mtimelogo">
-          <a href="http://www.mtime.com/">Mtime时光网</a>
+          <router-link :to="{
+            name: 'index'
+          }">Mtime时光网</router-link>
         </h1>
         <dl class="headbarnav">
-          <dd>
-            <a href="http://www.mtime.com/">首页</a>
+          <dd :class="selectItem==='index'?'cur':''">
+            <router-link :to="{
+            name: 'index'
+          }">首页</router-link>
+            <i v-show="selectItem==='index'" class="select_tab_item"></i>
           </dd>
-          <dd class="cur">
-            <a href="http://film.mtime.com/">电影</a>
-            <i></i>
+          <dd :class="selectItem==='movie-search'?'cur':''">
+            <router-link :to="{
+            name: 'movie-search'
+          }">电影</router-link>
+            <i v-show="selectItem==='movie-search'" class="select_tab_item"></i>
           </dd>
-          <dd>
-            <a href="http://news.mtime.com/">原创</a>
+          <dd :class="selectItem==='self-made'?'cur':''">
+            <router-link :to="{
+            name: 'self-made'
+          }" >原创</router-link>
+            <i v-show="selectItem==='self-made'" class="select_tab_item"></i>
           </dd>
-          <dd>
-            <a href="http://list.mtime.com/">榜单</a>
+          <dd :class="selectItem==='rank'?'cur':''">
+            <router-link :to="{
+            name: 'rank'
+          }">榜单</router-link>
+            <i v-show="selectItem==='rank'" class="select_tab_item"></i>
           </dd>
-          <dd>
-            <a href="http://community.mtime.com/">社区</a>
+          <dd :class="selectItem==='community'?'cur':''">
+            <router-link :to="{
+            name: 'community'
+          }">社区</router-link>
+            <i v-show="selectItem==='community'" class="select_tab_item"></i>
           </dd>
-          <dd>
-            <a href="http://live.mtime.com/">视频</a>
+          <dd :class="selectItem==='video'?'cur':''">
+            <router-link :to="{
+            name: 'video'
+          }">视频</router-link>
+            <i v-show="selectItem==='video'" class="select_tab_item"></i>
           </dd>
         </dl>
-        <div class="headtool" id="siginbox">
+        <div id="siginbox" class="headtool">
           <i class="line">
           </i>
           <div class="headunlogin">
-            <a id="loginbox">登录</a>
+            <router-link id="loginbox" :to="{
+            name: 'login'
+          }">登录</router-link>
           </div>
         </div>
-        <div class="headtool" id="qrcodediv" style="z-index:5;">
+        <div id="qrcodediv" class="headtool" style="z-index:5;">
           <i class="line">
           </i>
-          <a class="headqr" id="appdownloadbtn">
+          <a id="appdownloadbtn" class="headqr">
             <em class="ico-app">
             </em>
             <span>App下载</span>
@@ -51,7 +72,8 @@
 
 <script>
 export default {
-  name: "HeaderNav"
+  name: "HeaderNav",
+  props: ['selectItem']
 }
 </script>
 
@@ -186,6 +208,18 @@ export default {
   margin-right: 5px;
   display: inline-block;
   vertical-align: middle;
+}
+
+.select_tab_item {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  border-bottom: 5px solid #fff;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  position: absolute;
+  bottom: 0;
+  margin-left: -52px;
 }
 
 </style>
