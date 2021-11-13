@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-// 1. 通过Vue.use()安装router插件
 Vue.use(VueRouter)
 
-// 2. 创建VueRouter实例对象
+
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err)
+}
+
 const router = new VueRouter({
     base: process.env.BASE_URL,
     mode: "hash",
@@ -64,11 +68,12 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    console.log("路由beforeEach方法：", to, "当前登录用户：", localStorage);
-    let token = localStorage.getItem("usertoken");
+    let token = localStorage.getItem("userToken");
     if (to.fullPath.startsWith("/admin") && token == null) {
-        console.log("未进行后台管理登录，跳转到登录");
         next({path: '/login'})
+    }
+    if (to.fullPath.startsWith("/login") && token != null){
+        next({path: '/admin'})
     }
     next();
 })
