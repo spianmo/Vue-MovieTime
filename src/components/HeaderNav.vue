@@ -5,43 +5,50 @@
         <h1 id="mtimelogo">
           <router-link :to="{
             name: 'index'
-          }">Mtime时光网</router-link>
+          }">Mtime时光网
+          </router-link>
         </h1>
         <dl class="headbarnav">
           <dd :class="selectItem==='index'?'cur':''">
             <router-link :to="{
             name: 'index'
-          }">首页</router-link>
+          }">首页
+            </router-link>
             <i v-show="selectItem==='index'" class="select_tab_item"></i>
           </dd>
           <dd :class="selectItem==='movie-search'?'cur':''">
             <router-link :to="{
             name: 'movie-search'
-          }">电影</router-link>
+          }">电影
+            </router-link>
             <i v-show="selectItem==='movie-search'" class="select_tab_item"></i>
           </dd>
           <dd :class="selectItem==='self-made'?'cur':''">
             <router-link :to="{
             name: 'self-made'
-          }" >原创</router-link>
+          }">原创
+            </router-link>
             <i v-show="selectItem==='self-made'" class="select_tab_item"></i>
           </dd>
           <dd :class="selectItem==='rank'?'cur':''">
             <router-link :to="{
             name: 'rank'
-          }">榜单</router-link>
+          }">榜单
+            </router-link>
             <i v-show="selectItem==='rank'" class="select_tab_item"></i>
           </dd>
           <dd :class="selectItem==='community'?'cur':''">
             <router-link :to="{
             name: 'community'
-          }">社区</router-link>
+          }">社区
+            </router-link>
             <i v-show="selectItem==='community'" class="select_tab_item"></i>
           </dd>
           <dd :class="selectItem==='video'?'cur':''">
             <router-link :to="{
             name: 'video'
-          }">视频</router-link>
+          }">视频
+            </router-link>
             <i v-show="selectItem==='video'" class="select_tab_item"></i>
           </dd>
         </dl>
@@ -51,7 +58,8 @@
           <div class="headunlogin">
             <router-link id="loginbox" :to="{
             name: 'login'
-          }">登录</router-link>
+          }">登录
+            </router-link>
           </div>
         </div>
         <div id="qrcodediv" class="headtool" style="z-index:5;">
