@@ -3,7 +3,7 @@ import qs from 'qs'
 import router from '../router'
 
 let instance = axios.create(({
-    timeout: 3000,
+    timeout: 10000,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -79,6 +79,29 @@ const api = {
             data: data,
         })
     },
+    put (url, params, data) {
+        const config = {
+            method: 'put',
+            url: url
+        }
+        if (params) {
+            config.params = params
+        }
+        if (data) {
+            config.data = data
+        }
+        return instance(config)
+    },
+    delete (url, params) {
+        const config = {
+            method: 'delete',
+            url: url
+        }
+        if (params) {
+            config.params = params
+        }
+        return instance(config)
+    }
 }
 
 export default api

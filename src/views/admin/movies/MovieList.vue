@@ -5,7 +5,7 @@
         <el-button type="primary" @click="gotoCreate">添加影片</el-button>
       </el-form-item>
       <div style="float: right">
-        <el-form-item >
+        <el-form-item>
           <el-input v-model="keyword" placeholder="请输入影片名称关键字查询"></el-input>
         </el-form-item>
         <el-form-item>
@@ -74,40 +74,36 @@ export default {
       this.loadMovieList();
     },
     pageChange(e) {
-      console.log("分页切换", e);
       let page = e - 1;
       this.pageIndex = page;
       this.loadMovieList();
     },
-    rowDelete(movie) {
-      console.log("删除影片按钮点击", movie);
-      this.$confirm('影片[' + movie.name + ']将被删除, 是否继续?', '删除提示', {
+    async rowDelete(movie) {
+      let confirmRes = await this.$confirm('影片[' + movie.name + ']将被删除, 是否继续?', '删除提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.http({
-          url: '/api/movies/admin/delete/' + movie.movieId,
-          method: 'DELETE'
-        }).then((result) => {
-          if (result.status == 200) {
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
-            this.loadMovieList()
-          }
-        })
-
-      }).catch(() => {
-
-      });
+      })
+      if (confirmRes) {
+        let res = await this.$http.movie.deleteMovie(movie.movieId).catch(() => {
+          this.$message.error('删除失败!');
+        });
+        if (res.status === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          await this.loadMovieList()
+        }
+      }
     },
     rowEdit(movie) {
-      console.log("编辑影片按钮点击", movie);
+      this.$router.push({path: "/admin/create-movie", query: {"isEdit": true, "movieId": movie.movieId}})
+      sessionStorage.setItem("currentMenuItem", "0-1");
     },
     gotoCreate() {
       this.$router.push("/admin/create-movie")
+      sessionStorage.setItem("currentMenuItem", "0-1");
     }
   },
   mounted() {
